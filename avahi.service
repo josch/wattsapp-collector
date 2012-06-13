@@ -1,0 +1,10 @@
+<?xml version="1.0" standalone='no'?><!--*-nxml-*-->
+<!DOCTYPE service-group SYSTEM "avahi-service.dtd">
+<service-group>
+        <name>collector</name>
+        <service>
+                <type>_https._tcp</type>
+                <port>8443</port>
+                <txt-record>ns=wattsapp;ip=2001:638:709:5::5</txt-record>
+        </service>
+</service-group>

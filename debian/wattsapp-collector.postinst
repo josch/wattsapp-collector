@@ -1,0 +1,42 @@
+#!/bin/sh
+
+set -e
+
+case "$1" in
+    configure)
+        mkdir -p /var/lib/wattsapp
+        mkdir -p /var/lib/wattsapp/collector_clients
+	if [ ! -f /var/lib/wattsapp/collector.key ]; then
+		openssl genrsa -out /var/lib/wattsapp/collector.key 1024
+		echo "created privaate key in /var/lib/wattsapp/collector.key"
+		openssl req -new -key /var/lib/wattsapp/collector.key -out /tmp/certrequest.csr
+		openssl x509 -req -in /tmp/certrequest.csr -signkey /var/lib/wattsapp/collector.key -out /var/lib/wattsapp/collector.crt
+		echo "created self-signed certificate in /var/lib/wattsapp/collector.crt"
+		echo "distribute it to the cloud"
+		rm /tmp/certrequest.csr
+	fi
+	if [ ! -f /var/lib/wattsapp/collector.sqlite ]; then
+		cat | sqlite3 /var/lib/wattsapp/collector.sqlite << END
+PRAGMA foreign_keys=OFF;
+BEGIN TRANSACTION;
+CREATE TABLE sensors (
+        id INTEGER,
+        name TEXT,
+        status INTEGER,
+        type TEXT,
+        unit TEXT,
+        lat REAL,
+        lon REAL
+, uuid TEXT);
+CREATE TABLE value (
+        id INTEGER,
+        begin INTEGER,
+        end INTEGER,
+        value REAL
+);
+COMMIT;
+END
+	fi
+esac
+
+#DEBHELPER#

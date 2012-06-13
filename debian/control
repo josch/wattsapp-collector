@@ -1,0 +1,8 @@
+Source: wattsapp-collector
+Maintainer: Johannes Schauer <j.schauer@email.de>
+Build-Depends: debhelper
+
+Package: wattsapp-collector
+Architecture: all
+Depends: openssl, node-sqlite3, sqlite3, nodejs, avahi-daemon
+Description: wattsapp-collector
